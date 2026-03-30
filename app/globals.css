@@ -1,0 +1,74 @@
+@import "tailwindcss";
+
+@theme {
+  --font-sans: var(--font-poppins);
+  --font-display: var(--font-bubblegum);
+}
+
+@layer base {
+  body {
+    @apply selection:bg-blue-200 font-display bg-[#E0F7FA] text-[#2C3E50];
+  }
+}
+
+.disney-card {
+  @apply bg-white rounded-[32px] shadow-[0_12px_0_0_rgba(0,0,0,0.05)] border-4 border-transparent transition-all duration-300;
+}
+
+.disney-button {
+  @apply rounded-full font-display text-xl px-8 py-4 shadow-[0_8px_0_0_rgba(0,0,0,0.15)] active:translate-y-[4px] active:shadow-[0_4px_0_0_rgba(0,0,0,0.15)] transition-all;
+}
+
+/* Custom Scrollbar for the values list */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #4A90E2;
+  border-radius: 10px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #357ABD;
+}
+
+/* Animations */
+@keyframes float {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+.animate-float {
+  animation: float 3s ease-in-out infinite;
+}
+
+.jelly-blue {
+  @apply bg-[#1A73E8] text-white shadow-[#0D47A1];
+}
+
+.jelly-yellow {
+  @apply bg-[#FFD700] text-[#856404] shadow-[#B8860B];
+}
+
+.jelly-red {
+  @apply bg-[#EF4444] text-white shadow-[#991B1B];
+}
+
+.jelly-green {
+  @apply bg-[#22C55E] text-white shadow-[#166534];
+}
+
+.level-bar {
+  @apply h-6 bg-slate-200 rounded-full overflow-hidden border-2 border-white shadow-inner;
+}
+
+.level-progress {
+  @apply h-full bg-gradient-to-r from-yellow-400 to-orange-400 transition-all duration-1000 ease-out;
+}
