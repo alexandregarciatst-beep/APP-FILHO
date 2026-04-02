@@ -44,12 +44,6 @@ export interface GoalConfig {
 export interface ParentConfig {
   pin: string;
   isSetup: boolean;
-  setupSteps: {
-    admin: boolean;
-    usage: boolean;
-    overlay: boolean;
-    kiosk: boolean;
-  };
 }
 
 export interface Task {

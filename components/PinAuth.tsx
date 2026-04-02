@@ -55,15 +55,15 @@ export default function PinAuth({ correctPin, onSuccess, onCancel, isSetup = fal
       <motion.div 
         initial={{ y: 20, opacity: 0 }}
         animate={{ y: 0, opacity: 1 }}
-        className="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl border-8 border-blue-400"
+        className="bg-white rounded-[40px] p-8 max-w-md w-full shadow-2xl border-8 border-purple-400"
       >
         <div className="flex flex-col items-center text-center gap-6">
-          <div className="w-20 h-20 bg-blue-100 rounded-full flex items-center justify-center">
-            <Lock className="w-10 h-10 text-blue-600" />
+          <div className="w-20 h-20 bg-purple-100 rounded-full flex items-center justify-center">
+            <Lock className="w-10 h-10 text-purple-600" />
           </div>
           
           <div>
-            <h2 className="text-3xl font-bold text-blue-900 mb-2 font-bubblegum">
+            <h2 className="text-3xl font-bold text-purple-900 mb-2 font-bubblegum">
               {isSetup ? 'Criar Senha PIN' : 'Digite seu PIN'}
             </h2>
             <p className="text-gray-600">
@@ -73,7 +73,7 @@ export default function PinAuth({ correctPin, onSuccess, onCancel, isSetup = fal
 
           <div className="flex gap-4 h-16 items-center">
             {[...Array(pin.length)].map((_, i) => (
-              <div key={i} className="w-4 h-4 bg-blue-600 rounded-full" />
+              <div key={i} className="w-4 h-4 bg-purple-600 rounded-full" />
             ))}
             {[...Array(Math.max(0, (isSetup ? 6 : correctPin.length) - pin.length))].map((_, i) => (
               <div key={i} className="w-4 h-4 bg-gray-200 rounded-full" />
@@ -87,7 +87,7 @@ export default function PinAuth({ correctPin, onSuccess, onCancel, isSetup = fal
                 onClick={() => val === 'del' ? handleDelete() : val !== '' && handleNumberClick(val)}
                 className={`h-16 rounded-2xl text-2xl font-bold transition-all active:scale-95 ${
                   val === '' ? 'invisible' :
-                  val === 'del' ? 'bg-red-100 text-red-600' : 'bg-blue-50 text-blue-900 hover:bg-blue-100'
+                  val === 'del' ? 'bg-red-100 text-red-600' : 'bg-purple-50 text-purple-900 hover:bg-purple-100'
                 }`}
               >
                 {val === 'del' ? <Delete className="mx-auto" /> : val}
@@ -106,7 +106,7 @@ export default function PinAuth({ correctPin, onSuccess, onCancel, isSetup = fal
               <button
                 onClick={handleConfirmSetup}
                 disabled={pin.length < 4}
-                className="p-4 rounded-2xl bg-blue-500 text-white font-bold shadow-lg hover:bg-blue-600 transition-colors disabled:opacity-50"
+                className="p-4 rounded-2xl bg-purple-500 text-white font-bold shadow-lg hover:bg-purple-600 transition-colors disabled:opacity-50"
               >
                 Salvar PIN
               </button>
