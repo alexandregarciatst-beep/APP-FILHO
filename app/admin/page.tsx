@@ -9,7 +9,6 @@ import {
 } from 'lucide-react';
 import { Reorder, motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
-import ParentUnlockFlow from '@/components/ParentUnlockFlow';
 import PinAuth from '@/components/PinAuth';
 import { ShopItem } from '@/lib/models';
 
@@ -84,7 +83,16 @@ export default function AdminScreen() {
   };
 
   const handlePinSetupSuccess = (newPin: string) => {
-    updateParentConfig({ pin: newPin, isSetup: true });
+    updateParentConfig({ 
+      pin: newPin, 
+      isSetup: true,
+      setupSteps: {
+        admin: true,
+        usage: true,
+        overlay: true,
+        kiosk: true
+      }
+    });
     setShowPinSetup(false);
   };
 
@@ -543,10 +551,10 @@ export default function AdminScreen() {
               initial={{ scale: 0.9, opacity: 0 }}
               animate={{ scale: 1, opacity: 1 }}
               exit={{ scale: 0.9, opacity: 0 }}
-              className="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl border-4 border-purple-400 max-h-[90vh] overflow-y-auto"
+              className="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl border-4 border-blue-400 max-h-[90vh] overflow-y-auto"
             >
               <div className="flex justify-between items-center mb-6">
-                <h2 className="text-2xl font-bubblegum text-purple-600">
+                <h2 className="text-2xl font-bubblegum text-blue-600">
                   {editingShopItem ? 'EDITAR ITEM' : 'NOVO ITEM DA LOJA'}
                 </h2>
                 <button onClick={() => { setIsAddingShopItem(false); setEditingShopItem(null); }} className="p-2 text-gray-400 hover:text-gray-600">
@@ -561,7 +569,7 @@ export default function AdminScreen() {
                     name="name" 
                     defaultValue={editingShopItem?.name} 
                     required 
-                    className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold"
+                    className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-blue-400 outline-none font-bold"
                     placeholder="Ex: 30 min de videogame"
                   />
                 </div>
@@ -574,7 +582,7 @@ export default function AdminScreen() {
                       type="number" 
                       defaultValue={editingShopItem?.price ?? 50} 
                       required 
-                      className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold"
+                      className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-blue-400 outline-none font-bold"
                     />
                   </div>
                   <div>
@@ -583,7 +591,7 @@ export default function AdminScreen() {
                       name="icon" 
                       defaultValue={editingShopItem?.icon ?? '🎁'} 
                       required 
-                      className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold text-center text-2xl"
+                      className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-blue-400 outline-none font-bold text-center text-2xl"
                     />
                   </div>
                 </div>
@@ -593,7 +601,7 @@ export default function AdminScreen() {
                   <textarea 
                     name="description" 
                     defaultValue={editingShopItem?.description} 
-                    className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold h-24 resize-none"
+                    className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-blue-400 outline-none font-bold h-24 resize-none"
                     placeholder="O que a criança ganha com isso?"
                   />
                 </div>
@@ -603,14 +611,14 @@ export default function AdminScreen() {
                     type="checkbox" 
                     name="isOneTime" 
                     defaultChecked={editingShopItem?.isOneTime}
-                    className="w-6 h-6 rounded-lg text-purple-600 focus:ring-purple-400"
+                    className="w-6 h-6 rounded-lg text-blue-600 focus:ring-blue-400"
                   />
                   <span className="font-bold text-gray-600">Compra única (Desaparece após comprar)</span>
                 </label>
 
                 <button 
                   type="submit"
-                  className="w-full bg-purple-500 hover:bg-purple-600 text-white py-5 rounded-full text-xl font-bubblegum shadow-lg mt-4 flex items-center justify-center gap-2 transition active:scale-95"
+                  className="w-full bg-blue-500 hover:bg-blue-600 text-white py-5 rounded-full text-xl font-bubblegum shadow-lg mt-4 flex items-center justify-center gap-2 transition active:scale-95"
                 >
                   <Save size={24} /> SALVAR ITEM
                 </button>

@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { Task, LESSONS_LIST } from '@/lib/models';
 import { useTasks } from '@/lib/store';
-import { Timer, CheckCircle2, ArrowRight, Star, Heart } from 'lucide-react';
+import { Timer, CheckCircle2, ArrowRight, Star, Heart, Play } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import confetti from 'canvas-confetti';
 
@@ -63,11 +63,11 @@ export default function TaskExecution({ task, onClose }: Props) {
       <motion.div 
         initial={{ scale: 0.9, opacity: 0 }}
         animate={{ scale: 1, opacity: 1 }}
-        className="bg-white rounded-[40px] w-full max-w-2xl overflow-hidden shadow-2xl border-8 border-[#FFD700]"
+        className="bg-white rounded-[40px] w-full max-w-2xl overflow-hidden shadow-2xl border-8 border-blue-500"
       >
-        <div className="bg-[#4A90E2] p-6 text-white text-center">
+        <div className="bg-blue-600 p-6 text-white text-center">
           <h2 className="text-3xl font-bubblegum">{task.name}</h2>
-          <p className="opacity-90">Ganhe {task.points} estrelas! ⭐</p>
+          <p className="opacity-90 font-bold uppercase tracking-widest text-xs mt-1">Ganhe {task.points} estrelas! ⭐</p>
         </div>
 
         <div className="p-8">
@@ -87,7 +87,7 @@ export default function TaskExecution({ task, onClose }: Props) {
                       cy="96"
                       r="88"
                       fill="none"
-                      stroke="#E0E0E0"
+                      stroke="#F1F5F9"
                       strokeWidth="12"
                     />
                     <motion.circle
@@ -95,14 +95,14 @@ export default function TaskExecution({ task, onClose }: Props) {
                       cy="96"
                       r="88"
                       fill="none"
-                      stroke="#4A90E2"
+                      stroke="#2563EB"
                       strokeWidth="12"
                       strokeDasharray="552.92"
                       animate={{ strokeDashoffset: 552.92 * (1 - timeLeft / task.durationSeconds) }}
                       transition={{ duration: 1, ease: "linear" }}
                     />
                   </svg>
-                  <span className="text-5xl font-mono font-bold text-[#4A90E2]">
+                  <span className="text-5xl font-black text-blue-600 tracking-tighter">
                     {formatTime(timeLeft)}
                   </span>
                 </div>
@@ -110,21 +110,21 @@ export default function TaskExecution({ task, onClose }: Props) {
                 {!isTimerRunning && timeLeft > 0 ? (
                   <button
                     onClick={() => setIsTimerRunning(true)}
-                    className="bg-[#32CD32] hover:bg-[#2EB82E] text-white px-12 py-4 rounded-full text-2xl font-bubblegum shadow-lg transform transition active:scale-95"
+                    className="bg-green-500 hover:bg-green-600 text-white px-12 py-5 rounded-3xl text-2xl font-black shadow-xl shadow-green-100 transform transition active:scale-95 flex items-center gap-3"
                   >
-                    INICIAR TAREFA! 🚀
+                    INICIAR MISSÃO! <Play fill="white" size={24} />
                   </button>
                 ) : (
                   <button
                     disabled={timeLeft > 0}
                     onClick={handleComplete}
-                    className={`px-12 py-4 rounded-full text-2xl font-bubblegum shadow-lg transform transition active:scale-95 ${
+                    className={`px-12 py-5 rounded-3xl text-2xl font-black shadow-xl transform transition active:scale-95 ${
                       timeLeft > 0 
-                        ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                        : 'bg-[#FFD700] text-[#2C3E50] hover:bg-[#FFC800]'
+                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                        : 'bg-yellow-400 text-yellow-900 hover:bg-yellow-500 shadow-yellow-100'
                     }`}
                   >
-                    {timeLeft > 0 ? 'FAZENDO...' : 'CONCLUIR! ✅'}
+                    {timeLeft > 0 ? 'EM ANDAMENTO...' : 'CONCLUIR! ✅'}
                   </button>
                 )}
               </motion.div>
@@ -135,23 +135,26 @@ export default function TaskExecution({ task, onClose }: Props) {
                 animate={{ x: 0, opacity: 1 }}
                 className="flex flex-col items-center gap-6"
               >
-                <h3 className="text-2xl text-center font-bubblegum text-[#4A90E2]">
-                  MURAL DE LIÇÕES: O que você praticou?
-                </h3>
+                <div className="text-center">
+                  <h3 className="text-2xl font-black text-blue-900 mb-1">
+                    MURAL DE LIÇÕES
+                  </h3>
+                  <p className="text-gray-500 font-medium">O que você praticou nesta missão?</p>
+                </div>
                 
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 w-full max-h-[400px] overflow-y-auto p-2">
+                <div className="grid grid-cols-3 sm:grid-cols-4 gap-3 w-full max-h-[350px] overflow-y-auto p-2">
                   {LESSONS_LIST.map((lesson) => (
                     <button
                       key={lesson.id}
                       onClick={() => setSelectedLessonId(lesson.id)}
                       className={`flex flex-col items-center justify-center p-3 rounded-2xl border-4 transition-all ${
                         selectedLessonId === lesson.id 
-                          ? 'bg-[#4A90E2] text-white border-[#FFD700] scale-105 shadow-lg' 
-                          : 'bg-white text-gray-600 border-gray-100 hover:border-[#4A90E2]'
+                          ? 'bg-blue-600 text-white border-blue-200 scale-105 shadow-lg' 
+                          : 'bg-white text-gray-600 border-gray-100 hover:border-blue-200'
                       }`}
                     >
                       <span className="text-4xl mb-1">{lesson.icon}</span>
-                      <span className="text-[10px] font-bold uppercase text-center leading-tight">
+                      <span className="text-[10px] font-black uppercase text-center leading-tight">
                         {lesson.label}
                       </span>
                     </button>
@@ -161,10 +164,10 @@ export default function TaskExecution({ task, onClose }: Props) {
                 <button
                   disabled={!selectedLessonId}
                   onClick={handleFinish}
-                  className={`w-full py-4 rounded-full text-2xl font-bubblegum shadow-lg transform transition active:scale-95 flex items-center justify-center gap-2 ${
+                  className={`w-full py-5 rounded-3xl text-2xl font-black shadow-xl transform transition active:scale-95 flex items-center justify-center gap-2 ${
                     !selectedLessonId 
-                      ? 'bg-gray-300 text-gray-500 cursor-not-allowed' 
-                      : 'bg-[#32CD32] text-white hover:bg-[#2EB82E]'
+                      ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
+                      : 'bg-green-500 text-white hover:bg-green-600 shadow-green-100'
                   }`}
                 >
                   SALVAR LIÇÃO <Star className="fill-white" />

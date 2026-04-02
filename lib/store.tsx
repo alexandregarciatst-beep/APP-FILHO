@@ -32,6 +32,7 @@ interface TaskContextType {
   manualSleepUnlock: boolean;
   setManualSleepUnlock: (val: boolean) => void;
   isSleepMode: boolean;
+  isLoaded: boolean;
 }
 
 const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -41,7 +42,16 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
   const [stats, setStats] = useState<UserStats>({ totalPoints: 0, completedTasks: [], purchasedItems: [], purchaseHistory: [] });
   const [sleepConfig, setSleepConfig] = useState<SleepConfig>({ bedtime: '20:00', wakeupTime: '07:00', isEnabled: true });
   const [goalConfig, setGoalConfig] = useState<GoalConfig>({ targetPoints: 100, period: 'weekly', rewardDescription: '' });
-  const [parentConfig, setParentConfig] = useState<ParentConfig>({ pin: '', isSetup: false });
+  const [parentConfig, setParentConfig] = useState<ParentConfig>({ 
+    pin: '', 
+    isSetup: false,
+    setupSteps: {
+      admin: false,
+      usage: false,
+      overlay: false,
+      kiosk: false
+    }
+  });
   const [shopItems, setShopItems] = useState<ShopItem[]>([]);
   const [isLoaded, setIsLoaded] = useState(false);
   const [emergencyUnlock, setEmergencyUnlock] = useState(false);
@@ -92,6 +102,12 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
           setParentConfig({
             pin: parsedParent.pin ?? '',
             isSetup: parsedParent.isSetup ?? false,
+            setupSteps: parsedParent.setupSteps ?? {
+              admin: false,
+              usage: false,
+              overlay: false,
+              kiosk: false
+            }
           });
         }
         
@@ -251,7 +267,7 @@ export function TaskProvider({ children }: { children: React.ReactNode }) {
       updateSleepConfig, updateGoalConfig, updateParentConfig,
       isDailyComplete, dailyTasks, emergencyUnlock, setEmergencyUnlock,
       manualSleepUnlock, setManualSleepUnlock,
-      isSleepMode
+      isSleepMode, isLoaded
     }}>
       {children}
     </TaskContext.Provider>

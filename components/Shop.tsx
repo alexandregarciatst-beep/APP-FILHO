@@ -28,10 +28,10 @@ export default function Shop({ onClose }: ShopProps) {
       <motion.div 
         initial={{ scale: 0.9, opacity: 0, y: 20 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
-        className="bg-white rounded-[40px] w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] border-8 border-purple-400 shadow-2xl"
+        className="bg-white rounded-[40px] w-full max-w-lg overflow-hidden flex flex-col max-h-[85vh] border-8 border-blue-400 shadow-2xl"
       >
         {/* Header */}
-        <div className="bg-purple-500 p-6 text-white flex justify-between items-center">
+        <div className="bg-blue-600 p-6 text-white flex justify-between items-center">
           <div className="flex items-center gap-3">
             <ShoppingBag className="w-8 h-8" />
             <h2 className="text-3xl font-bubblegum">LOJINHA MÁGICA</h2>
@@ -42,11 +42,11 @@ export default function Shop({ onClose }: ShopProps) {
         </div>
 
         {/* Points Bar */}
-        <div className="bg-purple-50 p-4 border-b-2 border-purple-100 flex justify-center items-center gap-2">
+        <div className="bg-blue-50 p-4 border-b-2 border-blue-100 flex justify-center items-center gap-2">
           <span className="text-gray-500 font-bold uppercase text-xs tracking-widest">Seus Pontos:</span>
-          <div className="bg-white px-4 py-1 rounded-full border-2 border-purple-200 flex items-center gap-2 shadow-sm">
+          <div className="bg-white px-4 py-1 rounded-full border-2 border-blue-200 flex items-center gap-2 shadow-sm">
             <Star className="text-yellow-500 fill-yellow-500 w-5 h-5" />
-            <span className="text-2xl font-bubblegum text-purple-600">{stats.totalPoints}</span>
+            <span className="text-2xl font-bubblegum text-blue-600">{stats.totalPoints}</span>
           </div>
         </div>
 
@@ -66,7 +66,7 @@ export default function Shop({ onClose }: ShopProps) {
                 <div 
                   key={item.id}
                   className={`bg-white rounded-[28px] p-4 border-4 transition-all flex flex-col gap-2 relative overflow-hidden shadow-sm min-h-[210px] ${
-                    bought ? 'opacity-70 border-gray-200' : 'border-purple-100 hover:border-purple-300'
+                    bought ? 'opacity-70 border-gray-200' : 'border-blue-100 hover:border-blue-300'
                   }`}
                 >
                   {bought && (
@@ -87,7 +87,7 @@ export default function Shop({ onClose }: ShopProps) {
                   </div>
 
                   <div className="flex-1 flex flex-col gap-0.5">
-                    <h3 className="text-lg font-bubblegum text-purple-900 leading-tight break-words">{item.name}</h3>
+                    <h3 className="text-lg font-bubblegum text-blue-900 leading-tight break-words">{item.name}</h3>
                     <p className="text-[9px] text-gray-400 font-bold leading-tight line-clamp-2">{item.description}</p>
                   </div>
 
@@ -98,7 +98,7 @@ export default function Shop({ onClose }: ShopProps) {
                       bought 
                         ? 'bg-gray-100 text-gray-400 cursor-not-allowed' 
                         : canAfford
-                          ? 'bg-purple-500 text-white hover:bg-purple-600 shadow-[0_3px_0_#6B21A8]'
+                          ? 'bg-blue-600 text-white hover:bg-blue-700 shadow-[0_3px_0_#1E40AF]'
                           : 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-60'
                     }`}
                   >

@@ -15,8 +15,8 @@ const bubblegum = Bubblegum_Sans({
 });
 
 export const metadata: Metadata = {
-  title: 'TaskHero Kids',
-  description: 'Transforme tarefas em aventuras!',
+  title: 'JOYLOCK - Segurança Infantil',
+  description: 'Sistema de bloqueio inteligente e educativo.',
 };
 
 import { TaskProvider } from '@/lib/store';
