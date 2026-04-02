@@ -4,7 +4,7 @@ import React, { useState, useEffect } from 'react';
 import { useTasks } from '@/lib/store';
 import { Task } from '@/lib/models';
 import TaskExecution from '@/components/TaskExecution';
-import { Settings, Lock, Unlock, Star, CheckCircle2, Play } from 'lucide-react';
+import { Settings, Lock, Unlock, Star, CheckCircle2, Play, ShoppingBag } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { isSameDay, parseISO } from 'date-fns';
@@ -12,6 +12,7 @@ import { isSameDay, parseISO } from 'date-fns';
 import MathChallenge from '@/components/MathChallenge';
 import PinAuth from '@/components/PinAuth';
 import SleepModeOverlay from '@/components/SleepModeOverlay';
+import Shop from '@/components/Shop';
 
 export default function Dashboard() {
   const { dailyTasks, stats, isDailyComplete, tasks, isSleepMode, parentConfig } = useTasks();
@@ -19,6 +20,7 @@ export default function Dashboard() {
   const [mounted, setMounted] = useState(false);
   const [showMathChallenge, setShowMathChallenge] = useState(false);
   const [showPinAuth, setShowPinAuth] = useState(false);
+  const [showShop, setShowShop] = useState(false);
   const router = useRouter();
 
   useEffect(() => {
@@ -68,12 +70,20 @@ export default function Dashboard() {
               <p className="text-sm font-bold text-gray-500">PONTOS: {stats.totalPoints}</p>
             </div>
           </div>
-          <button 
-            onClick={handleAdminAccess}
-            className="p-3 bg-gray-100 rounded-full hover:bg-gray-200 transition active:scale-90"
-          >
-            <Settings className="text-gray-600" />
-          </button>
+          <div className="flex items-center gap-2">
+            <button 
+              onClick={() => setShowShop(true)}
+              className="p-3 bg-purple-100 text-purple-600 rounded-full hover:bg-purple-200 transition active:scale-90 shadow-sm border-2 border-purple-200"
+            >
+              <ShoppingBag size={24} />
+            </button>
+            <button 
+              onClick={handleAdminAccess}
+              className="p-3 bg-gray-100 text-gray-600 rounded-full hover:bg-gray-200 transition active:scale-90 shadow-sm border-2 border-gray-200"
+            >
+              <Settings size={24} />
+            </button>
+          </div>
         </header>
 
         {/* Auth Modals */}
@@ -89,6 +99,9 @@ export default function Dashboard() {
             onSuccess={() => handlePinSuccess()}
             onCancel={() => setShowPinAuth(false)}
           />
+        )}
+        {showShop && (
+          <Shop onClose={() => setShowShop(false)} />
         )}
 
         {/* Daily Status */}

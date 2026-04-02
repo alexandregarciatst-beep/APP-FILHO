@@ -2,12 +2,14 @@
 
 import React from 'react';
 import { motion } from 'motion/react';
-import { Moon, Stars, Clock, Lock } from 'lucide-react';
+import { Moon, Stars, Clock, Lock, Unlock } from 'lucide-react';
 import { useTasks } from '@/lib/store';
+import PinAuth from './PinAuth';
 
 export default function SleepModeOverlay() {
-  const { sleepConfig } = useTasks();
+  const { sleepConfig, parentConfig, setManualSleepUnlock } = useTasks();
   const [stars, setStars] = React.useState<{id: number, top: string, left: string, duration: number, delay: number}[]>([]);
+  const [showPinAuth, setShowPinAuth] = React.useState(false);
 
   React.useEffect(() => {
     const generatedStars = [...Array(20)].map((_, i) => ({
@@ -87,7 +89,26 @@ export default function SleepModeOverlay() {
         <p className="text-white/40 text-sm mt-8 italic">
           O dispositivo será liberado automaticamente no horário de acordar.
         </p>
+
+        <button
+          onClick={() => setShowPinAuth(true)}
+          className="mt-4 flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-6 py-3 rounded-full border border-white/10 transition-all active:scale-95 text-sm font-bold uppercase tracking-widest"
+        >
+          <Unlock className="w-4 h-4" />
+          Liberar Dispositivo (Responsável)
+        </button>
       </motion.div>
+
+      {showPinAuth && (
+        <PinAuth
+          correctPin={parentConfig.pin || "1234"}
+          onSuccess={() => {
+            setManualSleepUnlock(true);
+            setShowPinAuth(false);
+          }}
+          onCancel={() => setShowPinAuth(false)}
+        />
+      )}
 
       {/* Decorative Clouds */}
       <div className="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-blue-900/50 to-transparent pointer-events-none" />

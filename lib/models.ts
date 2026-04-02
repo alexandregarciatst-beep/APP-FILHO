@@ -58,9 +58,29 @@ export interface Task {
   order: number;
 }
 
+export interface Purchase {
+  id: string;
+  itemId: string;
+  itemName: string;
+  itemIcon: string;
+  price: number;
+  timestamp: string;
+}
+
 export interface UserStats {
   totalPoints: number;
   completedTasks: string[];
+  purchasedItems: string[]; // Current active one-time items
+  purchaseHistory: Purchase[]; // History of all purchases
+}
+
+export interface ShopItem {
+  id: string;
+  name: string;
+  icon: string;
+  price: number;
+  description: string;
+  isOneTime?: boolean;
 }
 
 export const ICONS_LIST = [

@@ -3,21 +3,34 @@
 import React, { useState, useEffect } from 'react';
 import { useTasks } from '@/lib/store';
 import { Task, ICONS_LIST } from '@/lib/models';
-import { ArrowLeft, Plus, Trash2, Edit2, GripVertical, Save, X, AlertTriangle, Moon, Target, Shield, Star, Trophy } from 'lucide-react';
+import { 
+  ArrowLeft, Plus, Trash2, Edit2, GripVertical, Save, X, 
+  AlertTriangle, Moon, Target, Shield, Star, Trophy, ShoppingBag 
+} from 'lucide-react';
 import { Reorder, motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
 import PinAuth from '@/components/PinAuth';
+import { ShopItem } from '@/lib/models';
 
 export default function AdminScreen() {
   const { 
     tasks, addTask, updateTask, deleteTask, reorderTasks, stats, 
     setEmergencyUnlock, emergencyUnlock, sleepConfig, updateSleepConfig,
-    goalConfig, updateGoalConfig, parentConfig, updateParentConfig
+    goalConfig, updateGoalConfig, parentConfig, updateParentConfig,
+    shopItems, addShopItem, updateShopItem, deleteShopItem, resetPoints, removePurchase
   } = useTasks();
   
   const [editingTask, setEditingTask] = useState<Task | null>(null);
+  const [isConfirmingReset, setIsConfirmingReset] = useState(false);
+  
+  const handleResetPoints = () => {
+    resetPoints();
+    setIsConfirmingReset(false);
+  };
   const [isAdding, setIsAdding] = useState(false);
-  const [activeTab, setActiveTab] = useState<'tasks' | 'settings' | 'goals'>('tasks');
+  const [editingShopItem, setEditingShopItem] = useState<ShopItem | null>(null);
+  const [isAddingShopItem, setIsAddingShopItem] = useState(false);
+  const [activeTab, setActiveTab] = useState<'tasks' | 'settings' | 'goals' | 'shop'>('tasks');
   const [showPinSetup, setShowPinSetup] = useState(false);
 
   useEffect(() => {
@@ -46,6 +59,26 @@ export default function AdminScreen() {
     } else {
       addTask(taskData);
       setIsAdding(false);
+    }
+  };
+
+  const handleSaveShopItem = (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget);
+    const itemData = {
+      name: formData.get('name') as string,
+      icon: (formData.get('icon') as string) || '🎁',
+      price: parseInt(formData.get('price') as string),
+      description: formData.get('description') as string,
+      isOneTime: formData.get('isOneTime') === 'on',
+    };
+
+    if (editingShopItem) {
+      updateShopItem({ ...editingShopItem, ...itemData });
+      setEditingShopItem(null);
+    } else {
+      addShopItem(itemData);
+      setIsAddingShopItem(false);
     }
   };
 
@@ -85,6 +118,7 @@ export default function AdminScreen() {
         <div className="flex bg-white p-2 rounded-[24px] shadow-sm border-2 border-gray-100">
           {[
             { id: 'tasks', label: 'Missões', icon: Plus },
+            { id: 'shop', label: 'Lojinha', icon: ShoppingBag },
             { id: 'goals', label: 'Metas', icon: Target },
             { id: 'settings', label: 'Ajustes', icon: Moon },
           ].map((tab) => (
@@ -155,6 +189,107 @@ export default function AdminScreen() {
           </div>
         )}
 
+        {activeTab === 'shop' && (
+          <div className="space-y-6">
+            <div className="flex justify-between items-center">
+              <h2 className="text-2xl font-bubblegum text-gray-700">Gerenciar Lojinha</h2>
+              <button 
+                onClick={() => setIsAddingShopItem(true)}
+                className="bg-[#4A90E2] text-white px-6 py-2 rounded-full font-bold shadow-md hover:bg-[#357ABD] transition flex items-center gap-2"
+              >
+                <Plus size={20} /> NOVO ITEM
+              </button>
+            </div>
+
+            <div className="grid grid-cols-1 gap-4">
+              {shopItems.length === 0 ? (
+                <div className="bg-white p-12 rounded-[40px] border-4 border-dashed border-gray-200 text-center">
+                  <p className="text-gray-400 font-bold">Nenhum item na lojinha ainda!</p>
+                </div>
+              ) : (
+                shopItems.map((item) => (
+                  <div 
+                    key={item.id}
+                    className="bg-white p-5 rounded-[28px] shadow-sm border-2 border-gray-100 flex items-center justify-between gap-4"
+                  >
+                    <div className="flex items-center gap-4">
+                      <div className="w-14 h-14 rounded-2xl bg-purple-50 flex items-center justify-center text-3xl shadow-inner">
+                        {item.icon}
+                      </div>
+                      <div>
+                        <h3 className="text-lg font-bold text-gray-800 leading-tight">{item.name}</h3>
+                        <p className="text-sm text-gray-400 font-bold mt-1">
+                          💰 {item.price} pts {item.isOneTime && '• Compra única'}
+                        </p>
+                      </div>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <button 
+                        onClick={() => setEditingShopItem(item)}
+                        className="p-3 text-purple-600 bg-purple-50 hover:bg-purple-100 rounded-xl transition"
+                      >
+                        <Edit2 size={18} />
+                      </button>
+                      <button 
+                        onClick={() => deleteShopItem(item.id)}
+                        className="p-3 text-red-500 bg-red-50 hover:bg-red-100 rounded-xl transition"
+                      >
+                        <Trash2 size={18} />
+                      </button>
+                    </div>
+                  </div>
+                ))
+              )}
+            </div>
+
+            {/* Purchase History Section */}
+            <div className="space-y-6 pt-8 border-t-4 border-gray-200">
+              <div className="flex items-center gap-3">
+                <ShoppingBag className="text-purple-600" />
+                <h2 className="text-2xl font-bubblegum text-gray-700">Histórico de Compras</h2>
+              </div>
+              
+              <div className="bg-white rounded-[40px] shadow-sm border-2 border-gray-100 overflow-hidden">
+                {stats.purchaseHistory.length === 0 ? (
+                  <div className="p-12 text-center text-gray-400 font-bold">
+                    Nenhuma compra realizada ainda.
+                  </div>
+                ) : (
+                  <div className="divide-y divide-gray-100">
+                    {stats.purchaseHistory.map((purchase) => (
+                      <div key={purchase.id} className="p-5 flex items-center justify-between">
+                        <div className="flex items-center gap-4">
+                          <div className="text-2xl w-10 h-10 bg-gray-50 rounded-xl flex items-center justify-center">
+                            {purchase.itemIcon}
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-800">{purchase.itemName}</p>
+                            <p className="text-xs text-gray-400">
+                              {new Date(purchase.timestamp).toLocaleString('pt-BR')}
+                            </p>
+                          </div>
+                        </div>
+                        <div className="flex items-center gap-4">
+                          <div className="text-purple-600 font-bold">
+                            -{purchase.price} pts
+                          </div>
+                          <button
+                            onClick={() => removePurchase(purchase.id)}
+                            className="bg-green-500 text-white px-4 py-1.5 rounded-full text-[10px] font-black tracking-wider hover:bg-green-600 transition-colors shadow-sm"
+                          >
+                            PAGO
+                          </button>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                )}
+              </div>
+            </div>
+          </div>
+        )}
+
         {activeTab === 'goals' && (
           <div className="space-y-6">
             <h2 className="text-2xl font-bubblegum text-gray-700">Metas e Prêmios</h2>
@@ -164,7 +299,32 @@ export default function AdminScreen() {
                 <div className="flex justify-between items-end mb-4">
                   <div>
                     <p className="text-gray-400 font-bold uppercase text-xs tracking-widest">Progresso Atual</p>
-                    <h3 className="text-4xl font-bubblegum text-[#D0021B]">{stats.totalPoints} / {goalConfig.targetPoints} ⭐</h3>
+                    <div className="flex items-center gap-3">
+                      <h3 className="text-4xl font-bubblegum text-[#D0021B]">{stats.totalPoints} / {goalConfig.targetPoints} ⭐</h3>
+                      {!isConfirmingReset ? (
+                        <button 
+                          onClick={() => setIsConfirmingReset(true)}
+                          className="bg-[#FFE4E6] text-[#E11D48] px-4 py-1.5 rounded-full text-[10px] font-black tracking-wider hover:bg-[#FECDD3] transition-colors shadow-sm"
+                        >
+                          ZERAR PONTOS
+                        </button>
+                      ) : (
+                        <div className="flex items-center gap-2">
+                          <button 
+                            onClick={handleResetPoints}
+                            className="bg-red-600 text-white px-3 py-1.5 rounded-full text-[10px] font-black tracking-wider hover:bg-red-700 transition-colors shadow-md"
+                          >
+                            CONFIRMAR?
+                          </button>
+                          <button 
+                            onClick={() => setIsConfirmingReset(false)}
+                            className="bg-gray-100 text-gray-500 px-3 py-1.5 rounded-full text-[10px] font-black tracking-wider hover:bg-gray-200 transition-colors"
+                          >
+                            X
+                          </button>
+                        </div>
+                      )}
+                    </div>
                   </div>
                   <Trophy className="text-[#FFD700] w-12 h-12" />
                 </div>
@@ -367,6 +527,91 @@ export default function AdminScreen() {
                   className="w-full bg-[#32CD32] hover:bg-[#2EB82E] text-white py-5 rounded-full text-xl font-bubblegum shadow-lg mt-4 flex items-center justify-center gap-2 transition active:scale-95"
                 >
                   <Save size={24} /> SALVAR MISSÃO
+                </button>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
+      {/* Shop Item Modal */}
+      <AnimatePresence>
+        {(isAddingShopItem || editingShopItem) && (
+          <div className="fixed inset-0 bg-black/50 backdrop-blur-sm z-50 flex items-center justify-center p-4">
+            <motion.div 
+              initial={{ scale: 0.9, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.9, opacity: 0 }}
+              className="bg-white rounded-[40px] w-full max-w-md p-8 shadow-2xl border-4 border-purple-400 max-h-[90vh] overflow-y-auto"
+            >
+              <div className="flex justify-between items-center mb-6">
+                <h2 className="text-2xl font-bubblegum text-purple-600">
+                  {editingShopItem ? 'EDITAR ITEM' : 'NOVO ITEM DA LOJA'}
+                </h2>
+                <button onClick={() => { setIsAddingShopItem(false); setEditingShopItem(null); }} className="p-2 text-gray-400 hover:text-gray-600">
+                  <X />
+                </button>
+              </div>
+
+              <form onSubmit={handleSaveShopItem} className="flex flex-col gap-6">
+                <div>
+                  <label className="block text-sm font-bold text-gray-500 mb-2 uppercase">Nome do Item</label>
+                  <input 
+                    name="name" 
+                    defaultValue={editingShopItem?.name} 
+                    required 
+                    className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold"
+                    placeholder="Ex: 30 min de videogame"
+                  />
+                </div>
+
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-sm font-bold text-gray-500 mb-2 uppercase">Preço (Pontos)</label>
+                    <input 
+                      name="price" 
+                      type="number" 
+                      defaultValue={editingShopItem?.price ?? 50} 
+                      required 
+                      className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold"
+                    />
+                  </div>
+                  <div>
+                    <label className="block text-sm font-bold text-gray-500 mb-2 uppercase">Ícone</label>
+                    <input 
+                      name="icon" 
+                      defaultValue={editingShopItem?.icon ?? '🎁'} 
+                      required 
+                      className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold text-center text-2xl"
+                    />
+                  </div>
+                </div>
+
+                <div>
+                  <label className="block text-sm font-bold text-gray-500 mb-2 uppercase">Descrição</label>
+                  <textarea 
+                    name="description" 
+                    defaultValue={editingShopItem?.description} 
+                    className="w-full p-4 bg-gray-100 rounded-2xl border-2 border-transparent focus:border-purple-400 outline-none font-bold h-24 resize-none"
+                    placeholder="O que a criança ganha com isso?"
+                  />
+                </div>
+
+                <label className="flex items-center gap-3 cursor-pointer">
+                  <input 
+                    type="checkbox" 
+                    name="isOneTime" 
+                    defaultChecked={editingShopItem?.isOneTime}
+                    className="w-6 h-6 rounded-lg text-purple-600 focus:ring-purple-400"
+                  />
+                  <span className="font-bold text-gray-600">Compra única (Desaparece após comprar)</span>
+                </label>
+
+                <button 
+                  type="submit"
+                  className="w-full bg-purple-500 hover:bg-purple-600 text-white py-5 rounded-full text-xl font-bubblegum shadow-lg mt-4 flex items-center justify-center gap-2 transition active:scale-95"
+                >
+                  <Save size={24} /> SALVAR ITEM
                 </button>
               </form>
             </motion.div>
