@@ -9,6 +9,7 @@ import {
 } from 'lucide-react';
 import { Reorder, motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import ParentUnlockFlow from '@/components/ParentUnlockFlow';
 import PinAuth from '@/components/PinAuth';
 import { ShopItem } from '@/lib/models';
 

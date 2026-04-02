@@ -9,8 +9,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { isSameDay, parseISO } from 'date-fns';
 
-import MathChallenge from '@/components/MathChallenge';
-import PinAuth from '@/components/PinAuth';
+import ParentUnlockFlow from '@/components/ParentUnlockFlow';
 import SleepModeOverlay from '@/components/SleepModeOverlay';
 import Shop from '@/components/Shop';
 
@@ -18,8 +17,7 @@ export default function Dashboard() {
   const { dailyTasks, stats, isDailyComplete, tasks, isSleepMode, parentConfig } = useTasks();
   const [executingTask, setExecutingTask] = useState<Task | null>(null);
   const [mounted, setMounted] = useState(false);
-  const [showMathChallenge, setShowMathChallenge] = useState(false);
-  const [showPinAuth, setShowPinAuth] = useState(false);
+  const [showUnlockFlow, setShowUnlockFlow] = useState(false);
   const [showShop, setShowShop] = useState(false);
   const router = useRouter();
 
@@ -32,20 +30,11 @@ export default function Dashboard() {
   if (!mounted) return null;
 
   const handleAdminAccess = () => {
-    setShowMathChallenge(true);
+    setShowUnlockFlow(true);
   };
 
-  const handleMathSuccess = () => {
-    setShowMathChallenge(false);
-    if (!parentConfig.isSetup) {
-      router.push('/admin');
-    } else {
-      setShowPinAuth(true);
-    }
-  };
-
-  const handlePinSuccess = () => {
-    setShowPinAuth(false);
+  const handleUnlockSuccess = () => {
+    setShowUnlockFlow(false);
     router.push('/admin');
   };
 
@@ -87,17 +76,11 @@ export default function Dashboard() {
         </header>
 
         {/* Auth Modals */}
-        {showMathChallenge && (
-          <MathChallenge 
-            onSuccess={handleMathSuccess} 
-            onCancel={() => setShowMathChallenge(false)} 
-          />
-        )}
-        {showPinAuth && (
-          <PinAuth 
+        {showUnlockFlow && (
+          <ParentUnlockFlow 
             correctPin={parentConfig.pin}
-            onSuccess={() => handlePinSuccess()}
-            onCancel={() => setShowPinAuth(false)}
+            onSuccess={handleUnlockSuccess}
+            onCancel={() => setShowUnlockFlow(false)}
           />
         )}
         {showShop && (

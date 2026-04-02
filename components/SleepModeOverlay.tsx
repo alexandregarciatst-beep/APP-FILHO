@@ -4,12 +4,12 @@ import React from 'react';
 import { motion } from 'motion/react';
 import { Moon, Stars, Clock, Lock, Unlock } from 'lucide-react';
 import { useTasks } from '@/lib/store';
-import PinAuth from './PinAuth';
+import ParentUnlockFlow from './ParentUnlockFlow';
 
 export default function SleepModeOverlay() {
   const { sleepConfig, parentConfig, setManualSleepUnlock } = useTasks();
   const [stars, setStars] = React.useState<{id: number, top: string, left: string, duration: number, delay: number}[]>([]);
-  const [showPinAuth, setShowPinAuth] = React.useState(false);
+  const [showUnlockFlow, setShowUnlockFlow] = React.useState(false);
 
   React.useEffect(() => {
     const generatedStars = [...Array(20)].map((_, i) => ({
@@ -91,7 +91,7 @@ export default function SleepModeOverlay() {
         </p>
 
         <button
-          onClick={() => setShowPinAuth(true)}
+          onClick={() => setShowUnlockFlow(true)}
           className="mt-4 flex items-center gap-2 bg-white/5 hover:bg-white/10 text-white/60 hover:text-white px-6 py-3 rounded-full border border-white/10 transition-all active:scale-95 text-sm font-bold uppercase tracking-widest"
         >
           <Unlock className="w-4 h-4" />
@@ -99,14 +99,14 @@ export default function SleepModeOverlay() {
         </button>
       </motion.div>
 
-      {showPinAuth && (
-        <PinAuth
+      {showUnlockFlow && (
+        <ParentUnlockFlow
           correctPin={parentConfig.pin || "1234"}
           onSuccess={() => {
             setManualSleepUnlock(true);
-            setShowPinAuth(false);
+            setShowUnlockFlow(false);
           }}
-          onCancel={() => setShowPinAuth(false)}
+          onCancel={() => setShowUnlockFlow(false)}
         />
       )}
 
